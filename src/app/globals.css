@@ -116,8 +116,8 @@ body {
 
 
 /* When sidebar is open */
-/* body.menu-open {
+ body.menu-open {
   overflow: hidden;
   filter: blur(4px);
   transition: filter 0.3s ease;
-} */
+} 
