@@ -71,7 +71,7 @@ export default function StudioSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 mb-12">
           {/* Create Your Canvas (Primary) */}
           <Link
-            href="https://the-canvas-studio.vercel.app/" 
+            href="https://canvas-studio.xyz/" 
             target="blank"
             className="bg-[#8C5FEE] text-white font-semibold text-sm px-5 py-2 rounded-md hover:opacity-90 transition-all inline-flex items-center"
           >
@@ -157,3 +157,4 @@ export default function StudioSection() {
     </section>
   );
 }
+
