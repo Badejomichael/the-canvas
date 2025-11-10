@@ -10,6 +10,8 @@ interface NavbarProps {
   isGalleryPage?: boolean;
 }
 
+const NAV_WIDTH = 256; // keep consistent width for sidebar
+
 const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -48,21 +50,21 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
       root.id = "navbar-portal-root";
       document.body.appendChild(root);
     }
-    return () => {
-      // keep root alive (do not remove it) — safe to leave
-    };
   }, []);
 
-  // Overlay + Sidebar rendered via portal to avoid parent's transform/stacking issues
+  // Portal sidebar component
   const PortalSidebar = () => {
-    const root = typeof document !== "undefined" ? document.getElementById("navbar-portal-root") : null;
+    const root =
+      typeof document !== "undefined"
+        ? document.getElementById("navbar-portal-root")
+        : null;
     if (!root) return null;
 
     return createPortal(
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Overlay: strong dark + backdrop blur, with webkit prefix for iOS */}
+            {/* Overlay */}
             <motion.div
               key="overlay"
               initial={{ opacity: 0 }}
@@ -73,12 +75,9 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
                 position: "fixed",
                 inset: 0,
                 zIndex: 2000,
-                // background fallback covers browsers without backdrop-filter support
-                background: "rgba(0,0,0,0.6)",
-                // ensure browsers that support backdrop-filter apply it (and iOS uses -webkit-)
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                // promote to its own compositing layer
+                background: "rgba(0,0,0,0.62)",
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
                 willChange: "backdrop-filter, opacity",
                 transform: "translateZ(0)",
               }}
@@ -96,36 +95,83 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
                 top: 0,
                 right: 0,
                 height: "100vh",
-                width: 256,
+                width: NAV_WIDTH,
                 zIndex: 2100,
-                background: "rgba(0,0,0,0.92)",
+                background: "rgba(0,0,0,0.96)",
                 WebkitOverflowScrolling: "touch",
-                // make sure sidebar stays crisp above blur
                 backfaceVisibility: "hidden",
+                boxShadow: " -20px 0 60px rgba(0,0,0,0.6)",
               }}
             >
-              <div className="h-full flex flex-col p-8 space-y-6">
-                {menuItems.map(({ label, href, external }) => (
+              <div className="relative h-full flex flex-col p-6 gap-4">
+                {/* Close button (visible and accessible) */}
+                <button
+                  aria-label="Close menu"
+                  onClick={() => setIsOpen(false)}
+                  className="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-white/6 hover:bg-white/10 flex items-center justify-center"
+                  style={{ color: "#fff" }}
+                >
+                  {/* simple X svg */}
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="block"
+                    aria-hidden
+                  >
+                    <path
+                      d="M18 6L6 18M6 6l12 12"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+
+                {/* Logo (optional small) */}
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-full overflow-hidden">
+                    <Image src="/canvas-logo.png" alt="logo" width={40} height={40} />
+                  </div>
+                  <div className="text-white font-semibold">The Canvas</div>
+                </div>
+
+                {/* Links */}
+                <div className="flex flex-col gap-3 mt-2">
+                  {menuItems.map(({ label, href, external }) => (
+                    <Link
+                      key={label}
+                      href={href}
+                      target={external ? "_blank" : "_self"}
+                      rel={external ? "noopener noreferrer" : undefined}
+                      className="text-lg text-white hover:text-gray-300 transition"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* MINT button placed immediately after links (not pinned to bottom) */}
+                <div className="mt-3">
                   <Link
-                    key={label}
-                    href={href}
-                    target={external ? "_blank" : "_self"}
-                    rel={external ? "noopener noreferrer" : undefined}
-                    className="text-lg text-white hover:text-gray-400 transition"
+                    href="https://youtu.be/dQw4w9WgXcQ?si=ZZVWDeXrQOfqjEth"
+                    target="_blank"
+                    id="mint-btn"
+                    className="inline-flex items-center justify-center text-sm px-4 py-2 rounded-md text-white font-medium transition-all border border-white/20 hover:bg-white/10"
                     onClick={() => setIsOpen(false)}
                   >
-                    {label}
+                    MINT
                   </Link>
-                ))}
+                </div>
 
-                <Link
-                  href="https://youtu.be/dQw4w9WgXcQ?si=ZZVWDeXrQOfqjEth"
-                  target="blank"
-                  id="mint-btn"
-                  className="mt-auto text-sm px-5 py-2 rounded-md text-white font-medium transition-all border border-white/20 hover:bg-white/10"
-                >
-                  MINT
-                </Link>
+                {/* Optional small spacer / legal at bottom */}
+                <div className="mt-auto text-sm text-white/60">
+                  © 2025 The Canvas
+                </div>
               </div>
             </motion.aside>
           </>
@@ -170,7 +216,7 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
           ))}
         </div>
 
-        {/* Right Button */}
+        {/* Right Button (desktop) */}
         <div className="hidden md:flex items-center">
           <Link
             href="https://youtu.be/dQw4w9WgXcQ?si=ZZVWDeXrQOfqjEth"
