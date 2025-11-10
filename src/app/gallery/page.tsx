@@ -109,7 +109,8 @@ export default function GalleryPage() {
 
         {/* BACK TO HOME CTA */}
         <a
-        href="/"
+        href="https://canvas-studio.xyz/"
+        target="blank"
         className="border border-[#8C5FEE] text-[#8C5FEE] px-6 py-3 rounded-md font-medium hover:bg-[#8C5FEE] hover:text-white transition-all inline-flex items-center justify-center"
         >
         <span className="inline-flex items-center justify-center w-8 h-7 rounded-full mr-2">
@@ -153,3 +154,4 @@ export default function GalleryPage() {
     </section>
   );
 }
+
