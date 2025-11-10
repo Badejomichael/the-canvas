@@ -74,7 +74,7 @@ export default function GalleryPage() {
     <div className="flex flex-col sm:flex-row gap-4">
         {/* CREATE YOUR CANVAS CTA */}
         <a
-        href="/canvas-studio"
+        href="/"
         className="bg-[#8C5FEE] text-white px-6 py-3 rounded-md font-medium hover:opacity-90 transition-all inline-flex items-center justify-center"
         >
         <span>CREATE YOUR CANVAS</span>
@@ -154,4 +154,5 @@ export default function GalleryPage() {
     </section>
   );
 }
+
 
