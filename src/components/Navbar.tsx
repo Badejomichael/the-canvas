@@ -25,11 +25,21 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
     { label: "ELIGIBILITY", href: "http://canvas-checker.xyz/", external: true },
   ];
 
+  // Detect scroll to apply navbar blur
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Prevent body scroll when sidebar is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [isOpen]);
 
   return (
     <nav
@@ -114,57 +124,52 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
       </div>
 
       {/* Mobile Sidebar */}
-<AnimatePresence>
-  {isOpen && (
-    <>
-      {/* Overlay background blur */}
-      <motion.div
-        className="fixed inset-0 bg-black/40 backdrop-blur-md z-40"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={() => setIsOpen(false)}
-      />
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Overlay background blur */}
+            <motion.div
+              className="fixed inset-0 bg-black/30 backdrop-blur-lg z-40 will-change-[backdrop-filter]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+            />
 
-      {/* Sidebar */}
-      <motion.aside
-        initial={{ x: "100%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "100%" }}
-        transition={{ type: "spring", stiffness: 80, damping: 15 }}
-        className="fixed top-0 right-0 h-full w-64 bg-black/90 z-50 flex flex-col items-start p-8 space-y-6"
-      >
-        {menuItems.map(({ label, href, external }) => (
-          <Link
-            key={label}
-            href={href}
-            target={external ? "_blank" : "_self"}
-            rel={external ? "noopener noreferrer" : undefined}
-            className="text-lg text-white hover:text-gray-400 transition"
-            onClick={() => setIsOpen(false)}
-          >
-            {label}
-          </Link>
-        ))}
-        <Link
-          href="https://youtu.be/dQw4w9WgXcQ?si=ZZVWDeXrQOfqjEth"
-          target="blank"
-          id="mint-btn"
-          className="text-sm px-5 py-2 rounded-md text-white font-medium transition-all border border-white/20 hover:bg-white/10"
-        >
-          MINT
-        </Link>
-      </motion.aside>
-    </>
-  )}
-</AnimatePresence>
-
+            {/* Sidebar */}
+            <motion.aside
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 80, damping: 15 }}
+              className="fixed top-0 right-0 h-full w-64 bg-black/90 z-50 flex flex-col items-start p-8 space-y-6"
+            >
+              {menuItems.map(({ label, href, external }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  target={external ? "_blank" : "_self"}
+                  rel={external ? "noopener noreferrer" : undefined}
+                  className="text-lg text-white hover:text-gray-400 transition"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {label}
+                </Link>
+              ))}
+              <Link
+                href="https://youtu.be/dQw4w9WgXcQ?si=ZZVWDeXrQOfqjEth"
+                target="blank"
+                id="mint-btn"
+                className="text-sm px-5 py-2 rounded-md text-white font-medium transition-all border border-white/20 hover:bg-white/10"
+              >
+                MINT
+              </Link>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
 
 export default Navbar;
-
-
-
-
