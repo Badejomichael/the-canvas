@@ -19,7 +19,7 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
   const menuItems = [
     { label: "ABOUT", href: `${prefix}#about`, external: false },
     { label: "TRAIT VOTING", href: `${prefix}#trait-voting`, external: false },
-    { label: "STUDIO", href: "canvas-studio.xyz", external: true },
+    { label: "STUDIO", href: "https://canvas-studio.xyz/", external: true },
     { label: "GALLERY", href: "/gallery", external: false },
     { label: "DOCS", href: "#", external: true },
     { label: "ELIGIBILITY", href: "http://canvas-checker.xyz/", external: true },
@@ -164,6 +164,7 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
 };
 
 export default Navbar;
+
 
 
 
