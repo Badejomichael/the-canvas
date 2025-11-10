@@ -130,7 +130,7 @@ export default function NFTCarousel() {
 
         {/* Dots */}
         <div className="flex items-center gap-2">
-          {images.map((_, i) => (
+          {(isMobile ? images : images.slice(0, 3)).map((_, i) => (
             <div
               key={i}
               onClick={() => scrollToIndex(i)}
