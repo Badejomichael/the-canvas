@@ -22,7 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
     { label: "STUDIO", href: `${prefix}#studio`, external: false },
     { label: "GALLERY", href: `${prefix}#studio`, external: false },
     { label: "DOCS", href: "#", external: true },
-    { label: "ELIGIBILITY", href: "https://canvas-whitelist.vercel.app/", external: true },
+    { label: "ELIGIBILITY", href: "http://canvas-checker.xyz/", external: true },
   ];
 
   useEffect(() => {
@@ -164,3 +164,4 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
 };
 
 export default Navbar;
+
