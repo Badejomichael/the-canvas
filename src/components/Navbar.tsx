@@ -13,7 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // If on gallery page, prepend "/" so links go to homepage sections
+  // Add prefix for gallery links
   const prefix = isGalleryPage ? "/" : "";
 
   const menuItems = [
@@ -25,20 +25,16 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
     { label: "ELIGIBILITY", href: "http://canvas-checker.xyz/", external: true },
   ];
 
-  // Detect scroll to apply navbar blur
+  // Navbar blur on scroll
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Prevent body scroll when sidebar is open
+  // Lock body scroll when menu is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = isOpen ? "hidden" : "";
   }, [isOpen]);
 
   return (
@@ -127,16 +123,16 @@ const Navbar: React.FC<NavbarProps> = ({ isGalleryPage = false }) => {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Overlay background blur */}
+            {/* Dark frosted-glass overlay */}
             <motion.div
-              className="fixed inset-0 bg-black/30 backdrop-blur-lg z-40 will-change-[backdrop-filter]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-xl z-40 will-change-[backdrop-filter]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
             />
 
-            {/* Sidebar */}
+            {/* Sidebar Panel */}
             <motion.aside
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
