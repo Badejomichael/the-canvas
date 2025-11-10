@@ -11,8 +11,6 @@ const images = [
   "/carousel/img5.jpg",
 ];
 
-const AUTOPLAY_INTERVAL = 4000; // 4 seconds
-
 export default function NFTCarousel() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(0);
@@ -26,32 +24,56 @@ export default function NFTCarousel() {
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
-
+  // Scroll to a specific index
   const scrollToIndex = (i: number) => {
     const el = containerRef.current;
     if (!el) return;
-    const cardWidth = 360 + 24; // width + gap
-    el.scrollTo({ left: i * cardWidth, behavior: "smooth" });
+    const cardWidth = 360 + 24; // image width + gap
+    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+    const scrollLeft = i * cardWidth;
+
+    // Clamp scroll value to avoid overshooting on desktop
+    el.scrollTo({ left: Math.min(scrollLeft, maxScrollLeft), behavior: "smooth" });
     setIndex(i);
   };
 
+  // --- FIXED: Arrows move exactly one image step ---
   const next = () => {
-    const maxIndex = isMobile ? images.length - 1 : images.length - 3;
-    if (index < maxIndex) {
-      scrollToIndex(index + 1);
-    } else {
-      scrollToIndex(0); // loop
-    }
+    const el = containerRef.current;
+    if (!el) return;
+    const cardWidth = 360 + 24;
+    const newIndex = Math.min(index + 1, images.length - 1);
+    scrollToIndex(newIndex);
   };
 
   const prev = () => {
-    const maxIndex = isMobile ? images.length - 1 : images.length - 3;
-    if (index > 0) {
-      scrollToIndex(index - 1);
-    } else {
-      scrollToIndex(maxIndex);
-    }
+    const newIndex = Math.max(index - 1, 0);
+    scrollToIndex(newIndex);
   };
+
+  // 🔥 Detect manual scrolls / swipes and update active index
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    let timeout: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      // debounce slightly to avoid flicker
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        const cardWidth = 360 + 24;
+        const newIndex = Math.round(el.scrollLeft / cardWidth);
+        setIndex(newIndex);
+      }, 100);
+    };
+
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      clearTimeout(timeout);
+      el.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="first-carousel flex flex-col items-center w-full overflow-hidden pt-5 pb-6 bg-[#EBEBE6]">
@@ -67,10 +89,7 @@ export default function NFTCarousel() {
           "
         >
           {images.map((src, i) => (
-            <div
-              key={i}
-              className="flex justify-center w-full md:block snap-center"
-            >
+            <div key={i} className="flex justify-center w-full md:block snap-center">
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
@@ -86,8 +105,6 @@ export default function NFTCarousel() {
               </motion.div>
             </div>
           ))}
-
-
         </div>
       </div>
 
@@ -97,6 +114,7 @@ export default function NFTCarousel() {
         <button
           onClick={prev}
           aria-label="Previous"
+          disabled={index === 0}
           className={`transition-opacity duration-300 ${
             index === 0 ? "opacity-40 cursor-not-allowed" : "opacity-100"
           }`}
@@ -112,7 +130,7 @@ export default function NFTCarousel() {
 
         {/* Dots */}
         <div className="flex items-center gap-2">
-          {(isMobile ? images : [0, 1, 2]).map((_, i) => (
+          {images.map((_, i) => (
             <div
               key={i}
               onClick={() => scrollToIndex(i)}
@@ -127,8 +145,9 @@ export default function NFTCarousel() {
         <button
           onClick={next}
           aria-label="Next"
+          disabled={index === images.length - 1}
           className={`transition-opacity duration-300 ${
-            index >= (isMobile ? images.length - 1 : images.length - 3)
+            index === images.length - 1
               ? "opacity-40 cursor-not-allowed"
               : "opacity-100"
           }`}
