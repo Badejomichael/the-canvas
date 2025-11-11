@@ -17,7 +17,7 @@ const Footer = () => {
 
       {/* Mobile Background Image */}
       <Image
-        src="/cms-bg-sm.jpg"
+        src="/cms-bg.jpg"
         alt="Join Community Background Mobile"
         fill
         className="object-cover block md:hidden" // 👈 only visible below md
@@ -65,3 +65,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
