@@ -113,11 +113,23 @@ body {
 }
 
 
-
-
 /* When sidebar is open */
  body.menu-open {
   overflow: hidden;
   filter: blur(4px);
   transition: filter 0.3s ease;
 } 
+
+/* Request Animation page dropdown */
+.input {
+  background: #111115;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: white;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #8C5FEE;
+}
