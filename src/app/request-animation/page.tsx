@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+
 import Navbar from "@/components/Navbar";
 
 import AnimationTypeDropdown from "./components/AnimationTypeDropdown";
@@ -77,25 +78,38 @@ export default function RequestAnimationPage() {
     e.preventDefault();
     const form = e.currentTarget;
 
+    setStatus("sending");
+
+    const formData = new FormData(form);
+
+    const payload = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        message: formData.get("message"),
+        timeline: formData.get("timeline"),
+        budget: formData.get("budget"),
+        animation_type: animationType,
+    };
+
     try {
-      setStatus("sending");
-
-      const formData = new FormData(form);
-      const data = new URLSearchParams(formData as any);
-
-      await fetch("https://formsubmit.co/justmikelll73@gmail.com", {
+        const res = await fetch("/api/request-animation", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: data.toString(),
-      });
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        });
 
-      form.reset();
-      setStatus("success");
-      setTimeout(() => setStatus("idle"), 3000);
+        if (!res.ok) throw new Error("Failed");
+
+        form.reset();
+        setStatus("success");
+        setTimeout(() => setStatus("idle"), 3000);
     } catch {
-      setStatus("idle");
+        setStatus("idle");
     }
-  };
+    };
+
 
   return (
     <section className="min-h-screen w-full bg-[#0c0c0c] text-white flex items-center justify-center px-6 py-24">
@@ -120,7 +134,6 @@ export default function RequestAnimationPage() {
           className="bg-[#0d0d12] border border-white/10 rounded-2xl p-8"
         >
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <input type="hidden" name="_captcha" value="false" />
 
             <input
               name="name"
