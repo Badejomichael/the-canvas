@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const result = await resend.emails.send({
-      from: "Animation Requests <onboarding@resend.dev>",
+      from: "Animation Requests <hello@canvassary.xyz>",
       to: ["badejoadetola3@gmail.com"],
       subject: "New Animation Request",
       html: `
@@ -71,4 +71,5 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
