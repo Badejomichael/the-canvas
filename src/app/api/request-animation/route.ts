@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     const result = await resend.emails.send({
       from: "Animation Requests <onboarding@resend.dev>",
-      to: ["uchefavour300@gmail.com"],
+      to: ["badejoadetola3@gmail.com"],
       subject: "New Animation Request",
       html: `
         <div style="font-family: Arial, Helvetica, sans-serif; color: #111; line-height: 1.6;">
@@ -71,3 +71,4 @@ export async function POST(req: Request) {
     );
   }
 }
+
